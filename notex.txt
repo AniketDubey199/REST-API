@@ -1,0 +1,94 @@
+mux is used for directing which api route will handle which handler function
+Resources
+- Go net/http documentation
+- Go JSON (encoding/json) documentation
+- Go context documentation
+- Go REST API tutorial — Alex Edwards
+- MDN HTTP overview
+Steps
+1. Learn HTTP basics
+   - HTTP methods
+   - Status codes
+   - Headers
+   - Request/response
+   - URL/query parameters
+   - JSON
+2. Create the Go project
+   - Initialize a Go module.
+   - Create a basic main.go.
+3. Build a basic HTTP server
+   - Use net/http.
+   - Create routes.
+   - Start the server.
+   - Return plain-text responses.
+4. Learn HTTP handlers
+   - http.Handler
+   - http.HandlerFunc
+   - http.ServeMux
+   - Handler chaining.
+5. Build your REST API
+   - Choose a small domain, e.g. Book Management API.
+   - Implement:
+     - GET /books
+     - GET /books/{id}
+     - POST /books
+     - PUT /books/{id}
+     - DELETE /books/{id}
+6. Add JSON
+   - Decode request bodies with json.Decoder.
+   - Encode responses with json.Encoder.
+   - Create request/response structs.
+   - Return proper Content-Type.
+7. Handle HTTP status codes
+   - 200
+   - 201
+   - 204
+   - 400
+   - 404
+   - 405
+   - 500
+8. Add middleware
+   - Logging middleware.
+   - Request timing middleware.
+   - Recovery/error middleware.
+   - Authentication middleware later.
+9. Add request validation
+   - Validate JSON fields.
+   - Validate URL parameters.
+   - Return structured error responses.
+10. Separate the project into layers
+    handler
+       ↓
+    service
+       ↓
+    repository
+       ↓
+    database
+11. Add persistence
+    - Start with in-memory storage.
+    - Then replace it with PostgreSQL/MongoDB.
+12. Add graceful shutdown
+    - Use context.
+    - Handle SIGINT/SIGTERM.
+    - Gracefully shut down the HTTP server.
+13. Test the API
+    - Test endpoints with Postman/curl.
+    - Add unit tests for handlers.
+    - Add integration tests.
+14. Add documentation
+    - README.
+    - API endpoint documentation.
+    - Request/response examples.
+    - Error formats.
+15. Final project
+    REST API
+    ├── net/http
+    ├── routing
+    ├── middleware
+    ├── JSON
+    ├── validation
+    ├── error handling
+    ├── database
+    ├── graceful shutdown
+    ├── testing
+    └── API documentation
