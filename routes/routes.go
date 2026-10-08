@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -25,8 +26,16 @@ type response struct {
 
 var books []Books
 
-func GetBooks(w http.ResponseWriter, _ *http.Request) {
+func GetBooks(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := context.WithTimeout(r.Context(), 1*time.Second)
+	defer cancel()
 	for _, val := range books {
+		select {
+		case <-ctx.Done():
+			http.Error(w, "Timeout", http.StatusBadRequest)
+			return
+		default:
+		}
 		err := json.NewEncoder(w).Encode(&val)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -36,6 +45,7 @@ func GetBooks(w http.ResponseWriter, _ *http.Request) {
 }
 
 func GetBook(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 	id := r.PathValue("id")
 	for _, val := range books {
 		idint, _ := strconv.Atoi(id)
@@ -47,15 +57,18 @@ func GetBook(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+	ctx.Done()
 }
+
 func CreateBook(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 	var req request
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	books = append(books, Books{req.Id, req.Name})
+	books = append(books, Books{ID: req.Id, Name: req.Name})
 	var res response
 	res = response{
 		Name:      req.Name,
@@ -69,7 +82,9 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	ctx.Done()
 }
+
 func DeleteBook(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	io.WriteString(w, "Book id: "+id+" got deleted.")
