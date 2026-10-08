@@ -3,7 +3,6 @@ package routes
 import (
 	"context"
 	"encoding/json"
-	"io"
 	"net/http"
 	"strconv"
 	"time"
@@ -87,5 +86,14 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 
 func DeleteBook(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
-	io.WriteString(w, "Book id: "+id+" got deleted.")
+	for i, val := range books {
+		idint, _ := strconv.Atoi(id)
+		if val.ID == idint {
+			json.NewEncoder(w).Encode(&val)
+			books = append(books[:i], books[i+1:]...)
+			return
+		}
+	}
+	w.WriteHeader(http.StatusBadGateway)
+	json.NewEncoder(w).Encode("There is no content")
 }
